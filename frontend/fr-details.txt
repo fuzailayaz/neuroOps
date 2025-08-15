@@ -1,0 +1,245 @@
+Abstract
+NeuroOps is an advanced, modular, and scalable system designed to enable seamless real-time AI-driven operations for diverse applications, 
+from data processing pipelines to intelligent automation platforms.
+Built with a containerized microservices architecture, the system integrates Python-based AI/ML modules, Redis for in-memory caching and message brokering, PostgreSQL for persistent data storage, and Next.js for an interactive, high-performance frontend.
+Docker Compose orchestrates services, ensuring reproducible and portable deployments across environments.
+The architecture supports low-latency communication between components, efficient resource utilization, and fault-tolerant execution.
+NeuroOps is engineered for flexibility—allowing developers to extend capabilities with custom AI models, APIs, or analytical workflows—making it suitable for production-ready automation, monitoring, and decision-support systems.
+
+
+Flow
+[Landing Page]
+     │
+     ▼
+[Sign Up] ──► [Account Creation Flow]
+     │
+     ▼
+[Login Page]
+     │
+     ▼
+[Authentication Check] 
+     │
+     ▼
+[Dashboard]
+ ┌───────┬────────────┬───────────┐
+ ▼       ▼            ▼
+[Chat] [KnowledgeBase] [Analytics]
+ │       │              │
+ │       ▼              ▼
+ │   [Article View]  [Usage Stats]
+ │       │              │
+ ▼       ▼              ▼
+[Upload Data/API Integrations] 
+     │
+     ▼
+[Dashboard Refresh]
+
+---------------------------
+
+Frontend Vision — NeuroOps AI Dashboard
+The frontend will act as the control center for all interactions with the multi-agent backend.
+It needs to be clean, responsive, and intuitive — catering to technical users (admins, developers) and non-technical ones (analysts, managers).
+
+🔹 Pages & Navigation Flow
+1. Landing Page (Public)
+Purpose: First point of contact, introduce the platform.
+
+Content & Layout:
+
+Hero section: App name + tagline (“Autonomous KnowledgeOps Powered by Multi-Agent AI”)
+
+Brief overview of core features with icons (Multi-agent orchestration, RAG search, Adaptive memory, etc.)
+
+Call-to-action (Login / Sign Up)
+
+Footer with contact info & links to docs
+
+Responsiveness: Fully fluid grid, mobile-first design.
+
+Navigation:
+
+“Login” → Auth Page
+
+“Sign Up” → Registration Page
+
+“Learn More” → Scrolls to feature highlights
+
+2. Authentication Pages
+Login Page
+
+Email/password login form
+
+OAuth options (Google/GitHub) — optional
+
+Sign-Up Page
+
+Registration form (Name, Email, Password, Role selection)
+
+Basic password strength indicator
+
+Forgot Password Page
+
+Email input for password reset
+
+Responsiveness: Form-centered layout with minimal distractions.
+
+3. Dashboard (Authenticated)
+Core UI Layout:
+
+Top Navbar: App logo, notifications, profile avatar dropdown (Profile, Settings, Logout)
+
+Left Sidebar (Collapsible):
+
+Chat
+
+Knowledge Base
+
+Agents
+
+Analytics
+
+Admin Tools (only for Admins)
+
+Main Workspace: Dynamic content depending on active section
+
+Responsiveness: Sidebar collapses into icon-only bar on smaller screens.
+
+4. Chat Interface (Main Workspace)
+Purpose: Real-time interaction with multi-agent AI.
+
+Layout:
+
+Conversation area with alternating AI/user message bubbles
+
+Streaming message typing effect
+
+Agent Indicator: Shows which agent is currently responding (Researcher, Summarizer, Validator, Presenter)
+
+Message input box with:
+
+Attachment option (for document ingestion)
+
+Send button
+
+Features:
+
+Chat history search
+
+Pin important responses
+
+Filter responses by confidence score
+
+Responsiveness: Chat rearranges vertically for mobile view.
+
+5. Knowledge Base Page
+Purpose: Manage documents and data sources.
+
+Sections:
+
+Upload area (drag & drop for PDF/DOC/TXT)
+
+List of ingested documents (sortable by date, type, size)
+
+Data source connectors (API integrations, GitHub repo link)
+
+Features:
+
+Progress bar for ingestion jobs
+
+Document status (processed, queued, failed)
+
+Responsiveness: Document table turns into a stacked card layout on mobile.
+
+6. Agents Page
+Purpose: View and manage AI agents.
+
+Sections:
+
+Agent list with description & current status
+
+Edit agent prompts / configuration
+
+Enable/disable specific agents
+
+Features:
+
+Add new custom agent
+
+Test agent responses in isolation
+
+Responsiveness: Cards for each agent that collapse into a single column on mobile.
+
+7. Analytics Page
+Purpose: Monitor platform usage and performance.
+
+Sections:
+
+Charts for:
+
+Number of queries over time
+
+Average response time
+
+Agent accuracy score
+
+Document ingestion stats
+
+Table for detailed query logs
+
+Responsiveness: Charts use responsive libraries (e.g., Chart.js/Recharts).
+
+8. Admin Tools Page (Admin role only)
+Purpose: Control system settings.
+
+Sections:
+
+Manage user accounts & roles
+
+API keys & integration settings
+
+System health monitoring
+
+9. User Profile Page
+Purpose: Allow users to manage personal settings.
+
+Sections:
+
+Update name, email, password
+
+Change role (if allowed)
+
+Notification preferences
+
+🔹 Navigation Experience
+Global Navigation: Sidebar + top navbar always visible (except auth pages)
+
+Breadcrumbs: Show current location for deeper pages
+
+Keyboard Shortcuts: For power users (e.g., Ctrl + K to open quick command palette)
+
+🔹 Core Frontend Features
+Real-Time Updates: WebSocket/SSE for streaming responses & live ingestion progress
+
+Role-Based UI: Admins see more menu items than Analysts/Viewers
+
+Theme Support: Light/Dark mode toggle
+
+Accessibility: ARIA labels, keyboard navigation, high contrast mode
+
+Performance Optimizations:
+
+Lazy loading of charts
+
+Infinite scroll for chat history
+
+Client-side caching with SWR/React Query
+
+🔹 Responsive Design Philosophy
+Mobile-first grid layouts
+
+Sidebar collapses to bottom navigation on mobile
+
+Charts resize dynamically
+
+Forms switch to stacked inputs for smaller screens
+

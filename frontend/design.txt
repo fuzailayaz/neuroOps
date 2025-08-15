@@ -1,0 +1,97 @@
+styled through a small CSS-in-JS layer, and animated with lightweight CSS and React helpers. The public site favours a component-driven approach (largely server-rendered by Next.js) that keeps first-paint fast while still allowing rich motion such as the continuously scrolling customer marquee you noticed. ​⁠￼
+
+Core Libraries and Build Tooling ￼
+ • Next.js & React: The site is rendered with Next.js for hybrid SSR/SSG, routing and image optimisation, while React drives interactive widgets on the client. ​⁠￼
+ • TypeScript: Strong typing across components increases safety and IDE support. ​⁠￼
+ • Redux (lightly) & GraphQL/Apollo: Redux appears only in isolated marketing modules (feature modals, cookie banners) while product pages use GraphQL queries hydrated at build time. ​⁠￼
+ • Emotion (CSS-in-JS): Replit uses Emotion rather than global CSS frameworks, enabling scoped styles, theming and easy dark-mode toggling without extra CSS files. ​⁠￼
+ • Webpack & Vite: Client bundles are compiled with Webpack (Next.js default) but internal component demos sometimes hot-reload with Vite for faster local DX. ​⁠￼
+
+These tools give you fast SSR, fine-grained code-splitting, image and font optimisation, and true component isolation—core to the site’s crisp feel.
+
+Styling, Fluid Grids and Design System ￼
+
+Replit maintains a private design-token file (exported in JSON) that feeds directly into Emotion’s theme provider. Tokens define spacing (4 pt scale), typography, elevation and colour semantics (‎`primary`, ‎`surface-high`, ‎`text-subtle`, etc.). Global styles are injected once per request, after which every component consumes the same design tokens—so nothing drifts when you add pages.
+
+Layout is driven by:
+ • Flexbox for hero and stat bars – lets items re-flow for phone widths without media-query overload.
+ • CSS Grid for comparison/feature tables – ensures symmetrical gutters across breakpoints.
+ • Clamp-based typography – headings use ‎`font-size: clamp(1.8rem, 1.4vw + 1rem, 3.6rem)` to scale fluidly, which is why text never jumps between sizes.
+
+Building similar fluidity: define breakpoints in one place (e.g. an ‎`mq()` helper) and co-locate layout props with components via Emotion’s styled syntax.
+
+Live-Motion Elements (e.g., “Loved by Google, Zillow…” Marquee) ￼
+
+Replit’s perpetual customer strip is a zero-dependency pattern: two identical flex rows are placed side-by-side within a wrapper wider than the viewport and animated leftwards with a single CSS keyframes transform. When the first strip exits fully, it’s reset behind the second, creating an infinite loop.￼
+
+To pause on hover (‎`:hover { animation-play-state: paused; }`) or respect reduced-motion you can gate the animation behind ‎`@media (prefers-reduced-motion: reduce)`.
+
+On React/Next you can wrap this in a ‎`Marquee.tsx` component, clone the children list twice, and let CSS handle the rest—no JS timers, so performance remains 60 fps.
+
+Theme & Colour Palette ￼
+
+Replit’s visual identity centres on Replit Orange ‎`#F26207`, balanced by deep greys for contrast. The brand kit exposes full values (RGB 242 98 7 / HSL 23 94 49). ​⁠￼
+
+Dark mode simply flips the greyscale tokens while leaving orange untouched, giving immediate brand recall in both schemes. If you’d like to mirror this:
+ • Keep a single accent hue across modes.
+ • Derive neutral surfaces from OKLCH lightness steps (e.g. ‎`l = 98‒4`).
+ • Export tokens as CSS custom properties so any new landing page inherits colours automatically.
+
+Layout Patterns to Replicate ￼
+ 1. Hero: 1100-px max-width centre column, 12-col grid, side gutters ‎`clamp(1rem, 6vw, 8rem)`.
+ 2. Section Rhythm: Alternate light/dark ‎`surface` backgrounds every ~800 px scroll to maintain reader energy.
+ 3. Scroll-triggered Fade-Ups: IntersectionObserver toggles ‎`data-visible` attributes; CSS transitions opacity/translate. Because animation is purely CSS (only threshold events fire), CPU cost stays negligible.
+ 4. Utility Classes: Though Emotion is primary, quick-layout helpers (‎`.flex`, ‎`.grid-2`, ‎`.gap-xl`) still exist for CMS-driven content where inline props are impossible.
+
+Putting It All Together in Your Project ￼
+ 1. Scaffold with ‎`npx create-next-app --typescript`.
+ 2. Install Emotion, add a ‎`theme.ts` holding your colour-token map (include Replit-style ‎`orange` and neutral scale).
+ 3. Copy the marquee snippet above into a ‎`<Marquee>` component, feed it brand logos as ‎`<Image>` children, and adjust ‎`animation-duration` for speed.
+ 4. Organise sections as standalone React components (‎`Hero`, ‎`Features`, ‎`SecurityStrip`, ‎`Testimonials`) so they are server-rendered but hydrate seamlessly.
+ 5. Add a ‎`<ThemeProvider>` high in the tree and a ‎`useDarkMode` hook to toggle root ‎`data-theme`.
+ 6. Optimise images with ‎`next/image` and load web-safe fonts from Google Fonts (the platform already does). ​⁠￼
+ 7. Finally, configure ‎`next-sitemap` and ‎`@sentry/nextjs` for SEO and error reporting, mirroring Replit’s own observability setup. ​⁠￼
+
+Following these conventions will give you a front-end that looks and feels close to Replit’s: fast, vibrant, and subtly animated without overwhelming the user.
+
+
+Elevation, Shadows & Depth ￼
+
+Replit’s pages stay flat-feeling until an element needs emphasis; at that point they apply one of four carefully tuned elevation levels that sit on top of the grey or dark surfaces used throughout the site. The shadows are declared as design-tokens and injected by Emotion at build time, so they are instantly available anywhere in the component tree. ​⁠￼￼
+
+Because the site supports dark-mode, each token is paired with a counterpart that slightly lowers opacity (‎`rgba(0,0,0,.32 → .24`) to keep contrast comfortable on a dark surface.￼
+
+Using CSS custom properties means you can instantly do￼
+
+and retain perfect parity with the rest of the brand surfaces. ​⁠￼
+
+Fluid Motion Patterns ￼
+
+Replit’s motion guidelines can be summarised as “fast in, smooth out”. Component entrances normally run 200–300 ms with a ￼ ease, while exits are 150 ms so the UI never feels sluggish. All transforms are GPU-friendly (‎`transform`, ‎`opacity`), and the site respects ‎`prefers-reduced-motion`.
+
+1. Scroll-Triggered Fade-Up ￼￼
+
+A 20-line ‎`IntersectionObserver` adds or removes ‎`data-visible` as you scroll—lightweight, yet highly engaging when paired with elevation changes.
+
+2. Infinite Customer Marquee ￼
+
+The continuously scrolling “Loved by Google, Anthropic…” line you noticed is pure CSS:￼
+
+Two identical tracks loop seamlessly; a ‎`hover` state sets ‎`animation-play-state: paused`. The motion stays < 10 KB and avoids any JS timing drift. ​⁠￼
+
+3. Button Micro-Interactions ￼
+
+Buttons lift to ‎`--shadow-2`, scale to ‎`0.98`, and darken ‎`Replit Orange` by 6 % on active—giving a tactile feel with almost no performance cost:￼
+
+Flow Enhancers & Visual Polish ￼
+
+• Parallax Layers: Hero illustrations translate on the Y-axis at 40 % scroll speed (‎`transform: translateY(calc(var(--scroll) * .4))`), adding depth without causing layout reflow.
+
+• Clamp-based Fluid Type: Headings scale with ￼ so text grows smoothly from phone to desktop.
+
+• Soft Separator Waves: SVG wave masks between sections inherit theme colours and animate their ‎`d` attribute on hover for a playful ripple effect.
+
+• Backdrop-Blur for Sticky Nav: The fixed header uses ‎`backdrop-filter: blur(8px)` plus ‎`background: rgba(24,24,27,.7)` to stay legible over any hero photography.
+
+Implement each of these with attention to ‎`will-change`, keep animation durations short, and you will match the crisp, lively feel that characterises Replit’s front end. The combination of tokenised shadows, GPU-efficient transforms, and brand-consistent accent colours (#F26207) yields an interface that feels both professional and delightfully responsive. ​⁠￼
+
